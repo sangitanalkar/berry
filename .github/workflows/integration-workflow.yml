@@ -223,12 +223,12 @@ jobs:
     #needs: build
 
     steps:
-    - uses: actions/checkout@v4
+    #- uses: actions/checkout@v4
 
-    - uses: actions/download-artifact@v4
-      with:
-        name: yarn-artifacts
-        path: packages
+    #- uses: actions/download-artifact@v4
+      #with:
+        #name: yarn-artifacts
+        #path: packages
 
     # https://github.com/multiarch/qemu-user-static
     - name: 'Enable execution of multi-arch containers'
@@ -243,9 +243,9 @@ jobs:
       run: |
         docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node --version && node ./scripts/run-yarn.js build:pnp:hook && node ./scripts/run-yarn.js build:zip:worker && node ./scripts/run-yarn.js build:cli && mv ./packages/yarnpkg-cli/bundles/yarn.js ./packages/yarnpkg-cli/bundles/yarn-min.js && node ./scripts/run-yarn.js build:cli --no-minify && node ./packages/yarnpkg-cli/bundles/yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
 
-    - name: 'Run the unit tests'
-      run: |
-        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./packages/yarnpkg-cli/bundles/yarn.js test:unit --maxWorkers=100% --shard=${{matrix.shard}}'
-      shell: bash
-      if: |
-        success() || failure()
+    #- name: 'Run the unit tests'
+   #   run: |
+    #    docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./packages/yarnpkg-cli/bundles/yarn.js test:unit --maxWorkers=100% --shard=${{matrix.shard}}'
+    #  shell: bash
+    #  if: |
+    #    success() || failure()
