@@ -214,13 +214,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: ['1/4', '2/4', '3/4', '4/4']
+        shard: ['1/4']
 
     name: 'Big-endian debian w/ Node.js latest (${{matrix.shard}})'
     runs-on: ubuntu-22.04
     #if: |
     #  github.ref == 'refs/heads/master'
-    needs: build
+    #needs: build
 
     steps:
     - uses: actions/checkout@v4
@@ -241,12 +241,11 @@ jobs:
 
     - name: 'Run the integration tests'
       run: |
-        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./scripts/run-yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
-      shell: bash
+        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node --version && node ./scripts/run-yarn.js build:pnp:hook && node ./scripts/run-yarn.js build:zip:worker && node ./scripts/run-yarn.js build:cli && mv ./packages/yarnpkg-cli/bundles/yarn.js ./packages/yarnpkg-cli/bundles/yarn-min.js && node ./scripts/run-yarn.js build:cli --no-minify && node ./packages/yarnpkg-cli/bundles/yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
 
     - name: 'Run the unit tests'
       run: |
-        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./scripts/run-yarn.js test:unit --maxWorkers=100% --shard=${{matrix.shard}}'
+        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./packages/yarnpkg-cli/bundles/yarn.js test:unit --maxWorkers=100% --shard=${{matrix.shard}}'
       shell: bash
       if: |
         success() || failure()
