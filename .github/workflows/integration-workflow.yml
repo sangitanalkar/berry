@@ -241,7 +241,7 @@ jobs:
 
     - name: 'Run the integration tests'
       run: |
-        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./packages/yarnpkg-cli/bundles/yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
+        docker run --rm --volume "$PWD:/berry" --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./packages/yarnpkg-cli/bundles/yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
 
     #- name: 'Run the unit tests'
    #   run: |
