@@ -218,22 +218,22 @@ jobs:
 
     name: 'Big-endian debian w/ Node.js latest (${{matrix.shard}})'
     runs-on: ubuntu-22.04
-    #if: |
-    #  github.ref == 'refs/heads/master'
+    if: |
+      github.ref == 'refs/heads/master'
     #needs: build
 
     steps:
     - uses: actions/checkout@v4
 
-    #- uses: actions/download-artifact@v4
-      #with:
-        #name: yarn-artifacts
-        #path: packages
+    - uses: actions/download-artifact@v4
+      with:
+        name: yarn-artifacts
+        path: packages
 
     # https://github.com/multiarch/qemu-user-static
     - name: 'Enable execution of multi-arch containers'
       run: |
-        docker run --rm --privileged multiarch/qemu-user-static --reset --persistent yes
+        docker run --rm --privileged tonistiigi/binfmt:latest --install all
       shell: bash
 
     # Apparently @babel/register is insanely slow inside the big-endian
@@ -241,7 +241,7 @@ jobs:
 
     - name: 'Run the integration tests'
       run: |
-        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node --version && ls && node ./scripts/run-yarn.js build:pnp:hook && node ./scripts/run-yarn.js build:zip:worker && node ./scripts/run-yarn.js build:cli && mv ./packages/yarnpkg-cli/bundles/yarn.js ./packages/yarnpkg-cli/bundles/yarn-min.js && node ./scripts/run-yarn.js build:cli --no-minify && node ./packages/yarnpkg-cli/bundles/yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
+        docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./packages/yarnpkg-cli/bundles/yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
 
     #- name: 'Run the unit tests'
    #   run: |
