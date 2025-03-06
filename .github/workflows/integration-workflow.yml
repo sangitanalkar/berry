@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: ${{startsWith(github.ref, 'refs/pull/')}}
 
 env:
-  node-version: '23.x'
+  node-version: '18.x'
 
 name: 'Integration'
 jobs:
