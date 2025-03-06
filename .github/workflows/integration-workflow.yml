@@ -233,7 +233,7 @@ jobs:
     # https://github.com/multiarch/qemu-user-static
     - name: 'Enable execution of multi-arch containers'
       run: |
-        docker run --rm --privileged tonistiigi/binfmt:latest --install all
+        docker run --rm --privileged multiarch/qemu-user-static --reset --persistent yes
       shell: bash
 
     # Apparently @babel/register is insanely slow inside the big-endian
