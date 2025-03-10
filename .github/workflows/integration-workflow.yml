@@ -295,7 +295,7 @@ jobs:
     # Apparently @babel/register is insanely slow inside the big-endian
     # docker container, so we don't want to run yarn from sources at all.
 
-    - name: 'Run the integration tests for s390x'
+    - name: 'Run the integration tests for Big Endian'
       run: |
         docker run --rm --volume "$PWD:/berry" --env GITHUB_ACTIONS --env YARN_IGNORE_PATH=1 --workdir /berry --platform linux/s390x node /bin/bash -c 'node ./packages/yarnpkg-cli/bundles/yarn.js test:integration --maxWorkers=100% --shard=${{matrix.shard}}'
       shell: bash
